@@ -25,7 +25,7 @@ class CarService implements IService<ICar> {
     return this._car.read();
   }
 
-  public async readOne(_id: string): Promise<ICar> {
+  public async readOne(_id: string): Promise<ICar | null> {
     if (!isValidObjectId(_id)) {
       throw new Error(ErrorTypes.InvalidMongoId);
     }
@@ -35,6 +35,28 @@ class CarService implements IService<ICar> {
     if (!car) {
       throw new Error(ErrorTypes.ObjectNotFound);
     }
+    return car;
+  }
+
+  public async update(_id: string, obj: ICar): Promise<ICar | null> {
+    if (!isValidObjectId(_id)) {
+      throw new Error(ErrorTypes.InvalidMongoId);
+    }
+
+    const parsed = carSchema.safeParse(obj);
+
+    if (!parsed.success) {
+      throw parsed.error;
+    }
+
+    const checkCar = await this._car.readOne(_id);
+
+    if (!checkCar) {
+      throw new Error(ErrorTypes.ObjectNotFound);
+    }
+
+    const car = await this._car.update(_id, obj);
+  
     return car;
   }
 }

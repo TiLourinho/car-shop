@@ -19,9 +19,17 @@ class CarController {
     return res.status(STATUS_CODE.OK).json(car);
   }
 
-  public async readOne(req: Request, res: Response<ICar>) {
+  public async readOne(req: Request, res: Response<ICar | null>) {
     const { id } = req.params;
     const car = await this._service.readOne(id);
+
+    return res.status(STATUS_CODE.OK).json(car);
+  }
+
+  public async update(req: Request, res: Response<ICar | null>) {
+    const { id } = req.params;
+    const carUpdate = req.body;
+    const car = await this._service.update(id, carUpdate);
 
     return res.status(STATUS_CODE.OK).json(car);
   }

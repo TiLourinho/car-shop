@@ -56,4 +56,26 @@ describe('1 - CarModel', () => {
       expect(allCars).to.be.deep.equal(allCarsMock);
     });
   });
+
+  describe('ReadOne method', () => {
+    beforeEach(() => {
+      sinon.stub(Model, 'findOne').resolves(carMockWithId);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('tests if "readOne" returns an object', async () => {
+      const id = '62e468e4143e7395140ee57d';
+      const car = await carModel.readOne(id);
+      expect(car).to.be.an('object');
+    });
+
+    it('tests if "readOne" returns an object exactly equal to "carMockWithId"', async () => {
+      const id = '62e468e4143e7395140ee57d';
+      const car = await carModel.readOne(id);
+      expect(car).to.be.deep.equal(carMockWithId);
+    });
+  });
 });

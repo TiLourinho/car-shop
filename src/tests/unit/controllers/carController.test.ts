@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import CarModel from '../../../models/CarModel';
 import CarService from '../../../services/CarService';
 import CarController from '../../../controllers/CarController';
-import { carMock, allCarsMock } from '../../mocks/carMocks';
+import { carMock, allCarsMock, carMockWithId } from '../../mocks/carMocks';
 
 const { expect } = chai;
 
@@ -51,6 +51,26 @@ describe('3 - CarController', () => {
       await carController.read(req, res);
       expect((res.status as sinon.SinonStub).calledWith(200)).to.be.true;
       expect((res.json as sinon.SinonStub).calledWith(allCarsMock)).to.be.true;
+    });
+  });
+
+  describe('Read method', () => {
+    before(() => {
+      sinon.stub(carService, 'readOne').resolves(carMockWithId);
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns(res);
+    });
+
+    after(() => {
+      sinon.restore();
+    });
+
+    it('tests if "readOne" has status 200 and returns an object exactly equal to "carMockWithId"', async () => {
+      req.params = { id: '62e468e4143e7395140ee57d' };
+
+      await carController.readOne(req, res);
+      expect((res.status as sinon.SinonStub).calledWith(200)).to.be.true;
+      expect((res.json as sinon.SinonStub).calledWith(carMockWithId)).to.be.true;
     });
   });
 });

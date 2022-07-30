@@ -7,9 +7,9 @@ const carMock: ICar = {
 	buyValue: 169990,
 	seatsQty: 4,
 	doorsQty: 2
-}
+};
 
-const carMockWithId: ICar & { _id:string } = {
+const carMockWithId: ICar & { _id: string } = {
   _id: '62e468e4143e7395140ee57d',
   model: 'Volkswagen Gol GTI',
 	year: 1993,
@@ -17,9 +17,31 @@ const carMockWithId: ICar & { _id:string } = {
 	buyValue: 169990,
 	seatsQty: 4,
 	doorsQty: 2
-}
+};
+
+const allCarsMock: ICar[] & { _id: string }[] = [
+	{
+		_id: "62e54abd77c0b5a9f3f95863",
+		model: "Volkswagen Gol GTI",
+		year: 1993,
+		color: "grey",
+		buyValue: 169990,
+		doorsQty: 2,
+		seatsQty: 4
+	},
+	{
+		_id: "62e54bf477c0b5a9f3f95865",
+		model: "Chevrolet Tigra",
+		year: 1998,
+		color: "blue",
+		buyValue: 26000,
+		doorsQty: 2,
+		seatsQty: 4
+	}
+];
 
 export {
   carMock,
-  carMockWithId
+  carMockWithId,
+	allCarsMock
 };

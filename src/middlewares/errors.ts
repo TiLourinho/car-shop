@@ -17,7 +17,6 @@ const errorHandler: ErrorRequestHandler = (
 
   if (mappedError) {
     const { httpStatus, error } = mappedError;
-
     return res.status(httpStatus).json({ error });
   }
   console.error(err);

@@ -3,7 +3,7 @@ import chai from 'chai';
 import { ZodError } from 'zod';
 import CarModel from '../../../models/CarModel';
 import CarService from '../../../services/CarService';
-import { carMock, carMockWithId } from '../../mocks/carMocks';
+import { carMock, carMockWithId, allCarsMock } from '../../mocks/carMocks';
 
 const { expect } = chai;
 
@@ -36,6 +36,34 @@ describe('2 - CarService', () => {
       } catch (error) {
         expect(error).to.be.instanceOf(ZodError);
       }
+    });
+  });
+
+  describe('Read method', () => {
+    before(() => {
+      sinon.stub(carModel, 'read')
+        .onCall(0).resolves(allCarsMock)
+        .onCall(1).resolves([])
+        .onCall(2).resolves(allCarsMock);
+    });
+  
+    after(()=>{
+      sinon.restore();
+    })
+  
+    it('tests if "read" returns an array', async () => {
+      const allCars = await carService.read();
+      expect(allCars).to.be.an('array');
+    });
+
+    it('tests if "read" returns an empty array when database has no registered cars', async () => {
+      const allCars = await carService.read();
+      expect(allCars).to.be.deep.equal([]);
+    });
+
+    it('tests if "read" returns an object exactly equal to "allCarsMock"', async () => {
+      const allCars = await carService.read();
+      expect(allCars).to.be.deep.equal(allCarsMock);
     });
   });
 });

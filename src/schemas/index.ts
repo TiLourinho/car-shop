@@ -13,7 +13,13 @@ const carSchema = vehicleSchema.extend({
   seatsQty: z.number().gte(2).lte(7),
 });
 
+const motorcycleSchema = vehicleSchema.extend({
+  category: z.enum(['Street', 'Custom', 'Trail']),
+  engineCapacity: z.number().int().positive().lte(2500),
+});
+
 export {
   vehicleSchema,
   carSchema,
+  motorcycleSchema,
 };

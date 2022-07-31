@@ -14,50 +14,51 @@ class CarService implements IService<ICar> {
 
   public async create(obj: ICar): Promise<ICar> {
     const parsed = carSchema.safeParse(obj);
+    if (!parsed.success) throw parsed.error;
 
-    if (!parsed.success) {
-      throw parsed.error;
-    }
-    return this._car.create(obj);
+    const newCar = await this._car.create(obj);
+
+    return newCar;
   }
 
   public async read(): Promise<ICar[]> {
-    return this._car.read();
+    const allCars = await this._car.read();
+
+    return allCars;
   }
 
   public async readOne(_id: string): Promise<ICar | null> {
-    if (!isValidObjectId(_id)) {
-      throw new Error(ErrorTypes.InvalidMongoId);
-    }
+    if (!isValidObjectId(_id)) throw new Error(ErrorTypes.InvalidMongoId);
 
-    const car = await this._car.readOne(_id);
+    const foundCar = await this._car.readOne(_id);
+    if (!foundCar) throw new Error(ErrorTypes.ObjectNotFound);
 
-    if (!car) {
-      throw new Error(ErrorTypes.ObjectNotFound);
-    }
-    return car;
+    return foundCar;
   }
 
   public async update(_id: string, obj: ICar): Promise<ICar | null> {
-    if (!isValidObjectId(_id)) {
-      throw new Error(ErrorTypes.InvalidMongoId);
-    }
+    if (!isValidObjectId(_id)) throw new Error(ErrorTypes.InvalidMongoId);
 
     const parsed = carSchema.safeParse(obj);
+    if (!parsed.success) throw parsed.error;
 
-    if (!parsed.success) {
-      throw parsed.error;
-    }
+    const checkedCar = await this._car.readOne(_id);
+    if (!checkedCar) throw new Error(ErrorTypes.ObjectNotFound);
 
-    const checkCar = await this._car.readOne(_id);
-
-    if (!checkCar) {
-      throw new Error(ErrorTypes.ObjectNotFound);
-    }
-
-    const car = await this._car.update(_id, obj);
+    const updatedCar = await this._car.update(_id, obj);
   
-    return car;
+    return updatedCar;
+  }
+
+  public async delete(_id: string): Promise<ICar | null> {
+    if (!isValidObjectId(_id)) throw new Error(ErrorTypes.InvalidMongoId);
+
+    const checkedCar = await this._car.readOne(_id);
+    if (!checkedCar) throw new Error(ErrorTypes.ObjectNotFound);
+
+    const removedCar = await this._car.delete(_id);
+
+    return removedCar;
   }
 }
 

@@ -38,7 +38,7 @@ class CarController {
     const { id } = req.params;
     await this._service.delete(id);
 
-    return res.status(STATUS_CODE.NO_CONTENT).end();
+    return res.status(STATUS_CODE.NO_CONTENT).json();
   }
 }
 

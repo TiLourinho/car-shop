@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import CarModel from '../../../models/CarModel';
 import CarService from '../../../services/CarService';
 import CarController from '../../../controllers/CarController';
-import { carMock, allCarsMock, carMockWithId } from '../../mocks/carMocks';
+import { carMock, allCarsMock, carMockWithId, carMockToUpdate, carMockToUpdateWithId } from '../../mocks/carMocks';
 
 const { expect } = chai;
 
@@ -54,7 +54,7 @@ describe('3 - CarController', () => {
     });
   });
 
-  describe('Read method', () => {
+  describe('ReadOne method', () => {
     before(() => {
       sinon.stub(carService, 'readOne').resolves(carMockWithId);
       res.status = sinon.stub().returns(res);
@@ -71,6 +71,47 @@ describe('3 - CarController', () => {
       await carController.readOne(req, res);
       expect((res.status as sinon.SinonStub).calledWith(200)).to.be.true;
       expect((res.json as sinon.SinonStub).calledWith(carMockWithId)).to.be.true;
+    });
+  });
+
+  describe('Update method', () => {
+    before(() => {
+      sinon.stub(carService, 'update').resolves(carMockToUpdateWithId);
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns(res);
+    });
+
+    after(() => {
+      sinon.restore();
+    });
+
+    it('tests if "update" has status 200 and returns an object exactly equal to "carMockToUpdateWithId"', async () => {
+      req.params = { id: '62e6ab1cf7070abdb0aa0c2a' };
+      req.body = carMockToUpdate;
+
+      await carController.update(req, res);
+      expect((res.status as sinon.SinonStub).calledWith(200)).to.be.true;
+      expect((res.json as sinon.SinonStub).calledWith(carMockToUpdateWithId)).to.be.true;
+    });
+  });
+
+  describe('Delete method', () => {
+    before(() => {
+      sinon.stub(carService, 'delete').resolves();
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns(res);
+    });
+
+    after(() => {
+      sinon.restore();
+    });
+
+    it('tests if "delete" has status 204 and nothing returned', async () => {
+      req.params = { id: '62e6ab1cf7070abdb0aa0c2a' };
+
+      await carController.delete(req, res);
+      expect((res.status as sinon.SinonStub).calledWith(204)).to.be.true;
+      expect((res.json as sinon.SinonStub).calledWith()).to.be.true;
     });
   });
 });

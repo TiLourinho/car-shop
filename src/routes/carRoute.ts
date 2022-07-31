@@ -7,5 +7,6 @@ carRoute.post('/', (req, res) => carFactory().create(req, res));
 carRoute.get('/', (req, res) => carFactory().read(req, res));
 carRoute.get('/:id', (req, res) => carFactory().readOne(req, res));
 carRoute.put('/:id', (req, res) => carFactory().update(req, res));
+carRoute.delete('/:id', (req, res) => carFactory().delete(req, res));
 
 export default carRoute;

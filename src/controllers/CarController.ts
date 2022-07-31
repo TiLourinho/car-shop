@@ -8,30 +8,37 @@ class CarController {
 
   public async create(req: Request, res: Response<ICar>) {
     const carRequest = req.body;
-    const car = await this._service.create(carRequest);
+    const newCar = await this._service.create(carRequest);
 
-    return res.status(STATUS_CODE.CREATED).json(car);
+    return res.status(STATUS_CODE.CREATED).json(newCar);
   }
 
   public async read(_req: Request, res: Response<ICar[]>) {
-    const car = await this._service.read();
+    const allCars = await this._service.read();
 
-    return res.status(STATUS_CODE.OK).json(car);
+    return res.status(STATUS_CODE.OK).json(allCars);
   }
 
   public async readOne(req: Request, res: Response<ICar | null>) {
     const { id } = req.params;
-    const car = await this._service.readOne(id);
+    const foundCar = await this._service.readOne(id);
 
-    return res.status(STATUS_CODE.OK).json(car);
+    return res.status(STATUS_CODE.OK).json(foundCar);
   }
 
   public async update(req: Request, res: Response<ICar | null>) {
     const { id } = req.params;
     const carUpdate = req.body;
-    const car = await this._service.update(id, carUpdate);
+    const updatedCar = await this._service.update(id, carUpdate);
 
-    return res.status(STATUS_CODE.OK).json(car);
+    return res.status(STATUS_CODE.OK).json(updatedCar);
+  }
+
+  public async delete(req: Request, res: Response<ICar | null>) {
+    const { id } = req.params;
+    await this._service.delete(id);
+
+    return res.status(STATUS_CODE.NO_CONTENT).end();
   }
 }
 

@@ -2,7 +2,7 @@ import * as sinon from 'sinon';
 import chai from 'chai';
 import { Model } from 'mongoose';
 import CarModel from '../../../models/CarModel';
-import { carMock, carMockWithId, allCarsMock } from '../../mocks/carMocks';
+import { carMock, carMockWithId, allCarsMock, carMockToUpdate, carMockToUpdateWithId } from '../../mocks/carMocks';
 
 const { expect } = chai;
 
@@ -68,14 +68,58 @@ describe('1 - CarModel', () => {
 
     it('tests if "readOne" returns an object', async () => {
       const id = '62e468e4143e7395140ee57d';
-      const car = await carModel.readOne(id);
-      expect(car).to.be.an('object');
+      const foundCar = await carModel.readOne(id);
+      expect(foundCar).to.be.an('object');
     });
 
     it('tests if "readOne" returns an object exactly equal to "carMockWithId"', async () => {
       const id = '62e468e4143e7395140ee57d';
-      const car = await carModel.readOne(id);
-      expect(car).to.be.deep.equal(carMockWithId);
+      const foundCar = await carModel.readOne(id);
+      expect(foundCar).to.be.deep.equal(carMockWithId);
+    });
+  });
+
+  describe('Update method', () => {
+    beforeEach(() => {
+      sinon.stub(Model, 'findByIdAndUpdate').resolves(carMockToUpdateWithId);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('tests if "update" returns an object', async () => {
+      const id = '62e468e4143e7395140ee57d';
+      const updatedCar = await carModel.update(id, carMockToUpdate);
+      expect(updatedCar).to.be.an('object');
+    });
+
+    it('tests if "update" returns an object exactly equal to "carMockToUpdateWithId"', async () => {
+      const id = '62e468e4143e7395140ee57d';
+      const updatedCar = await carModel.update(id, carMockToUpdate);
+      expect(updatedCar).to.be.deep.equal(carMockToUpdateWithId);
+    });
+  });
+
+  describe('Delete method', () => {
+    beforeEach(() => {
+      sinon.stub(Model, 'findByIdAndDelete').resolves(carMockWithId);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('tests if "delete" returns an object', async () => {
+      const id = '62e468e4143e7395140ee57d';
+      const deletedCar = await carModel.delete(id);
+      expect(deletedCar).to.be.an('object');
+    });
+
+    it('tests if "delete" returns an object exactly equal to "carMockWithId"', async () => {
+      const id = '62e468e4143e7395140ee57d';
+      const deletedCar = await carModel.delete(id);
+      expect(deletedCar).to.be.deep.equal(carMockWithId);
     });
   });
 });

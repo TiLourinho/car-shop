@@ -51,8 +51,15 @@ class MotorcycleService implements IService<IMotorcycle> {
     return updatedMotorcycle;
   }
 
-  delete(id: string) {
-    return this._motorcycle.delete(id);
+  public async delete(id: string): Promise<IMotorcycle | null> {
+    if (!isValidObjectId(id)) throw new Error(ErrorTypes.InvalidMongoId);
+
+    const checkedMotorcycle = await this._motorcycle.readOne(id);
+    if (!checkedMotorcycle) throw new Error(ErrorTypes.ObjectNotFound);
+
+    const removedMotorcycle = await this._motorcycle.delete(id);
+
+    return removedMotorcycle;
   }
 }
 

@@ -33,6 +33,13 @@ class MotorcycleController {
 
     return res.status(STATUS_CODE.OK).json(updatedMotorcycle);
   }
+
+  public async delete(req: Request, res: Response<IMotorcycle | null>) {
+    const { id } = req.params;
+    await this._service.delete(id);
+
+    return res.status(STATUS_CODE.NO_CONTENT).json();
+  }
 }
 
 export default MotorcycleController;

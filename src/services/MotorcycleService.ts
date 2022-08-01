@@ -1,9 +1,9 @@
-// import { isValidObjectId } from 'mongoose';
+import { isValidObjectId } from 'mongoose';
 import { IService } from '../interfaces/IService';
 import { IMotorcycle } from '../interfaces/IMotorcycle';
 import { IModel } from '../interfaces/IModel';
 import { motorcycleSchema } from '../schemas';
-// import { ErrorTypes } from '../errors/catalog';
+import { ErrorTypes } from '../errors/catalog';
 
 class MotorcycleService implements IService<IMotorcycle> {
   private _motorcycle: IModel<IMotorcycle>;
@@ -27,8 +27,13 @@ class MotorcycleService implements IService<IMotorcycle> {
     return allMotorcycles;
   }
 
-  readOne(id: string) {
-    return this._motorcycle.readOne(id);
+  public async readOne(id: string): Promise<IMotorcycle | null> {
+    if (!isValidObjectId(id)) throw new Error(ErrorTypes.InvalidMongoId);
+
+    const foundMotorcycle = await this._motorcycle.readOne(id);
+    if (!foundMotorcycle) throw new Error(ErrorTypes.ObjectNotFound);
+
+    return foundMotorcycle;
   }
 
   update(id: string, obj: IMotorcycle) {

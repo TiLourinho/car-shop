@@ -84,8 +84,8 @@ describe('5 - MotorcycleService', () => {
 
     it('tests if "readOne" returns an object', async () => {
       const id = '62e72ec0da4b869355d9976c';
-      const motorcycle = await motorcycleService.readOne(id);
-      expect(motorcycle).to.be.an('object');
+      const foundMotorcycle = await motorcycleService.readOne(id);
+      expect(foundMotorcycle).to.be.an('object');
     });
 
     it('tests if "readOne" returns an error when database has no registered motorcycles', async () => {
@@ -108,8 +108,8 @@ describe('5 - MotorcycleService', () => {
 
     it('tests if "readOne" returns an object exactly equal to "motorcycleMockWithId"', async () => {
       const id = '62e72ec0da4b869355d9976c';
-      const motorcycle = await motorcycleService.readOne(id);
-      expect(motorcycle).to.be.deep.equal(motorcycleMockWithId);
+      const foundMotorcycle = await motorcycleService.readOne(id);
+      expect(foundMotorcycle).to.be.deep.equal(motorcycleMockWithId);
     });
   });
 
@@ -163,6 +163,50 @@ describe('5 - MotorcycleService', () => {
       const id = '62e72ec0da4b869355d9976c';
       const updatedMotorcycle = await motorcycleService.update(id, motorcycleMockToUpdate);
       expect(updatedMotorcycle).to.be.deep.equal(motorcycleMockToUpdateWithId);
+    });
+  });
+
+  describe('Delete method', () => {
+    before(() => {
+      sinon.stub(motorcycleModel, 'readOne')
+        .onCall(0).resolves(motorcycleMockWithId)
+        .onCall(1).resolves()
+        .onCall(2).resolves(motorcycleMockWithId);
+      sinon.stub(motorcycleModel, 'delete').resolves(motorcycleMockWithId);
+    });
+
+    after(() => {
+      sinon.restore();
+    });
+
+    it('tests if "delete" returns an object', async () => {
+      const id = '62e72ec0da4b869355d9976c';
+      const deletedMotorcycle = await motorcycleService.delete(id);
+      expect(deletedMotorcycle).to.be.an('object');
+    });
+
+    it('tests if "delete" returns an error when database has no registered motorcycles', async () => {
+      try {
+        const id = '84e468e4143e7395140ee57d';
+        await motorcycleService.delete(id);
+      } catch (error: any) {
+        expect(error.message).to.be.deep.equal(ErrorTypes.ObjectNotFound);
+      }
+    });
+
+    it('tests if "delete" returns an error when id is invalid', async () => {
+      try {
+        const id = '123SALVEEU';
+        await motorcycleService.delete(id);
+      } catch (error: any) {
+        expect(error.message).to.be.deep.equal(ErrorTypes.InvalidMongoId);
+      }
+    });
+
+    it('tests if "delete" returns an object exactly equal to "motorcycleMockWithId"', async () => {
+      const id = '62e72ec0da4b869355d9976c';
+      const deletedMotorcycle = await motorcycleService.delete(id);
+      expect(deletedMotorcycle).to.be.deep.equal(motorcycleMockWithId);
     });
   });
 });

@@ -95,4 +95,24 @@ describe('6 - MotorcycleController', () => {
       expect((res.json as sinon.SinonStub).calledWith(motorcycleMockToUpdateWithId)).to.be.true;
     });
   });
+
+  describe('Delete method', () => {
+    before(() => {
+      sinon.stub(motorcycleService, 'delete').resolves();
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns(res);
+    });
+
+    after(() => {
+      sinon.restore();
+    });
+
+    it('tests if "delete" has status 204 and nothing returned', async () => {
+      req.params = { id: '62e72ec0da4b869355d9976c' };
+
+      await motorcycleController.delete(req, res);
+      expect((res.status as sinon.SinonStub).calledWith(204)).to.be.true;
+      expect((res.json as sinon.SinonStub).calledWith()).to.be.true;
+    });
+  });
 });

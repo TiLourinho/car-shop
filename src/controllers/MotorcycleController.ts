@@ -18,6 +18,13 @@ class MotorcycleController {
 
     return res.status(STATUS_CODE.OK).json(allMotorcycles);
   }
+
+  public async readOne(req: Request, res: Response<IMotorcycle | null>) {
+    const { id } = req.params;
+    const foundMotorcycle = await this._service.readOne(id);
+
+    return res.status(STATUS_CODE.OK).json(foundMotorcycle);
+  }
 }
 
 export default MotorcycleController;

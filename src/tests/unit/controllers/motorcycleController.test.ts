@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import MotorcycleModel from '../../../models/MotorcycleModel';
 import MotorcycleService from '../../../services/MotorcycleService';
 import MotorcycleController from '../../../controllers/MotorcycleController';
-import { motorcycleMock, allMotorcyclesMock } from '../../mocks/motorcycleMocks';
+import { motorcycleMock, allMotorcyclesMock, motorcycleMockWithId } from '../../mocks/motorcycleMocks';
 
 const { expect } = chai;
 
@@ -51,6 +51,26 @@ describe('6 - MotorcycleController', () => {
       await motorcycleController.read(req, res);
       expect((res.status as sinon.SinonStub).calledWith(200)).to.be.true;
       expect((res.json as sinon.SinonStub).calledWith(allMotorcyclesMock)).to.be.true;
+    });
+  });
+
+  describe('ReadOne method', () => {
+    before(() => {
+      sinon.stub(motorcycleService, 'readOne').resolves(motorcycleMockWithId);
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns(res);
+    });
+
+    after(() => {
+      sinon.restore();
+    });
+
+    it('tests if "readOne" has status 200 and returns an object exactly equal to "motorcycleMockWithId"', async () => {
+      req.params = { id: '62e468e4143e7395140ee57d' };
+
+      await motorcycleController.readOne(req, res);
+      expect((res.status as sinon.SinonStub).calledWith(200)).to.be.true;
+      expect((res.json as sinon.SinonStub).calledWith(motorcycleMockWithId)).to.be.true;
     });
   });
 });

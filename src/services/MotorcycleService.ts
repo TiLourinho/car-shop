@@ -36,8 +36,19 @@ class MotorcycleService implements IService<IMotorcycle> {
     return foundMotorcycle;
   }
 
-  update(id: string, obj: IMotorcycle) {
-    return this._motorcycle.update(id, obj);
+  public async update(id: string, obj: IMotorcycle)
+    : Promise<IMotorcycle | null> {
+    if (!isValidObjectId(id)) throw new Error(ErrorTypes.InvalidMongoId);
+
+    const parsed = motorcycleSchema.safeParse(obj);
+    if (!parsed.success) throw parsed.error;
+
+    const checkedMotorcycle = await this._motorcycle.readOne(id);
+    if (!checkedMotorcycle) throw new Error(ErrorTypes.ObjectNotFound);
+
+    const updatedMotorcycle = await this._motorcycle.update(id, obj);
+
+    return updatedMotorcycle;
   }
 
   delete(id: string) {

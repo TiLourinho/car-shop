@@ -21,8 +21,10 @@ class MotorcycleService implements IService<IMotorcycle> {
     return newMotorcycle;
   }
 
-  read() {
-    return this._motorcycle.read();
+  public async read(): Promise<IMotorcycle[]> {
+    const allMotorcycles = await this._motorcycle.read();
+
+    return allMotorcycles;
   }
 
   readOne(id: string) {

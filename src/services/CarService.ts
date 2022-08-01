@@ -27,36 +27,36 @@ class CarService implements IService<ICar> {
     return allCars;
   }
 
-  public async readOne(_id: string): Promise<ICar | null> {
-    if (!isValidObjectId(_id)) throw new Error(ErrorTypes.InvalidMongoId);
+  public async readOne(id: string): Promise<ICar | null> {
+    if (!isValidObjectId(id)) throw new Error(ErrorTypes.InvalidMongoId);
 
-    const foundCar = await this._car.readOne(_id);
+    const foundCar = await this._car.readOne(id);
     if (!foundCar) throw new Error(ErrorTypes.ObjectNotFound);
 
     return foundCar;
   }
 
-  public async update(_id: string, obj: ICar): Promise<ICar | null> {
-    if (!isValidObjectId(_id)) throw new Error(ErrorTypes.InvalidMongoId);
+  public async update(id: string, obj: ICar): Promise<ICar | null> {
+    if (!isValidObjectId(id)) throw new Error(ErrorTypes.InvalidMongoId);
 
     const parsed = carSchema.safeParse(obj);
     if (!parsed.success) throw parsed.error;
 
-    const checkedCar = await this._car.readOne(_id);
+    const checkedCar = await this._car.readOne(id);
     if (!checkedCar) throw new Error(ErrorTypes.ObjectNotFound);
 
-    const updatedCar = await this._car.update(_id, obj);
+    const updatedCar = await this._car.update(id, obj);
   
     return updatedCar;
   }
 
-  public async delete(_id: string): Promise<ICar | null> {
-    if (!isValidObjectId(_id)) throw new Error(ErrorTypes.InvalidMongoId);
+  public async delete(id: string): Promise<ICar | null> {
+    if (!isValidObjectId(id)) throw new Error(ErrorTypes.InvalidMongoId);
 
-    const checkedCar = await this._car.readOne(_id);
+    const checkedCar = await this._car.readOne(id);
     if (!checkedCar) throw new Error(ErrorTypes.ObjectNotFound);
 
-    const removedCar = await this._car.delete(_id);
+    const removedCar = await this._car.delete(id);
 
     return removedCar;
   }

@@ -3,7 +3,8 @@ import chai from 'chai';
 import { ZodError } from 'zod';
 import MotorcycleModel from '../../../models/MotorcycleModel';
 import MotorcycleService from '../../../services/MotorcycleService';
-import { motorcycleMock, motorcycleMockWithId, allMotorcyclesMock } from '../../mocks/motorcycleMocks';
+import { motorcycleMock, motorcycleMockWithId, allMotorcyclesMock,
+  motorcycleMockToUpdate, motorcycleMockToUpdateWithId } from '../../mocks/motorcycleMocks';
 import { ErrorTypes } from '../../../errors/catalog';
 
 const { expect } = chai;
@@ -82,14 +83,14 @@ describe('5 - MotorcycleService', () => {
     });
 
     it('tests if "readOne" returns an object', async () => {
-      const id = '62e721d8fb384e37fa8e7f2e';
+      const id = '62e72ec0da4b869355d9976c';
       const motorcycle = await motorcycleService.readOne(id);
       expect(motorcycle).to.be.an('object');
     });
 
     it('tests if "readOne" returns an error when database has no registered motorcycles', async () => {
       try {
-        const id = '62e721d8fb384e37fa8e7f2e';
+        const id = '84e72ec0da4b869355d9aaaa';
         await motorcycleService.readOne(id);
       } catch (error: any) {
         expect(error.message).to.be.deep.equal(ErrorTypes.ObjectNotFound);
@@ -106,9 +107,62 @@ describe('5 - MotorcycleService', () => {
     });
 
     it('tests if "readOne" returns an object exactly equal to "motorcycleMockWithId"', async () => {
-      const id = '62e721d8fb384e37fa8e7f2e';
+      const id = '62e72ec0da4b869355d9976c';
       const motorcycle = await motorcycleService.readOne(id);
       expect(motorcycle).to.be.deep.equal(motorcycleMockWithId);
+    });
+  });
+
+  describe('Update method', () => {
+    before(() => {
+      sinon.stub(motorcycleModel, 'readOne')
+        .onCall(0).resolves(motorcycleMockWithId)
+        .onCall(1).resolves()
+        .onCall(2).resolves(motorcycleMockWithId);
+      sinon.stub(motorcycleModel, 'update').resolves(motorcycleMockToUpdateWithId);
+    });
+
+    after(() => {
+      sinon.restore();
+    });
+
+    it('tests if "update" returns an object', async () => {
+      const id = '62e72ec0da4b869355d9976c';
+      const updatedMotorcycle = await motorcycleService.update(id, motorcycleMockToUpdate);
+      expect(updatedMotorcycle).to.be.an('object');
+    });
+
+    it('tests if "update" returns an error when database has no registered motorcycles', async () => {
+      try {
+        const id = '84e468e4143e7395140eaaaa';
+        await motorcycleService.update(id, motorcycleMockToUpdate);
+      } catch (error: any) {
+        expect(error.message).to.be.deep.equal(ErrorTypes.ObjectNotFound);
+      }
+    });
+
+    it('tests if "update" returns an error when id is invalid', async () => {
+      try {
+        const id = '123SALVEEU';
+        await motorcycleService.update(id, motorcycleMockToUpdate);
+      } catch (error: any) {
+        expect(error.message).to.be.deep.equal(ErrorTypes.InvalidMongoId);
+      }
+    });
+
+    it('tests if "update" accepts an invalid parameter', async () => {
+      try {
+        const id = '62e72ec0da4b869355d9976c';
+        await motorcycleService.update(id, {} as any);
+      } catch (error) {
+        expect(error).to.be.instanceOf(ZodError);
+      }
+    });
+
+    it('tests if "update" returns an object exactly equal to "motorcycleMockToUpdateWithId"', async () => {
+      const id = '62e72ec0da4b869355d9976c';
+      const updatedMotorcycle = await motorcycleService.update(id, motorcycleMockToUpdate);
+      expect(updatedMotorcycle).to.be.deep.equal(motorcycleMockToUpdateWithId);
     });
   });
 });

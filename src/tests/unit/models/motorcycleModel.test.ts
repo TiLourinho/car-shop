@@ -68,13 +68,13 @@ describe('4 - MotorcycleModel', () => {
     });
 
     it('tests if "readOne" returns an object', async () => {
-      const id = '62e468e4143e7395140ee57d';
+      const id = '62e72ec0da4b869355d9976c';
       const foundMotorcycle = await motorcycleModel.readOne(id);
       expect(foundMotorcycle).to.be.an('object');
     });
 
     it('tests if "readOne" returns an object exactly equal to "motorcycleMockWithId"', async () => {
-      const id = '62e468e4143e7395140ee57d';
+      const id = '62e72ec0da4b869355d9976c';
       const foundMotorcycle = await motorcycleModel.readOne(id);
       expect(foundMotorcycle).to.be.deep.equal(motorcycleMockWithId);
     });
@@ -90,15 +90,37 @@ describe('4 - MotorcycleModel', () => {
     });
 
     it('tests if "update" returns an object', async () => {
-      const id = '62e468e4143e7395140ee57d';
+      const id = '62e72ec0da4b869355d9976c';
       const updatedMotorcycle = await motorcycleModel.update(id, motorcycleMockToUpdate);
       expect(updatedMotorcycle).to.be.an('object');
     });
 
     it('tests if "update" returns an object exactly equal to "motorcycleMockToUpdateWithId"', async () => {
-      const id = '62e468e4143e7395140ee57d';
+      const id = '62e72ec0da4b869355d9976c';
       const updatedMotorcycle = await motorcycleModel.update(id, motorcycleMockToUpdate);
       expect(updatedMotorcycle).to.be.deep.equal(motorcycleMockToUpdateWithId);
+    });
+  });
+
+  describe('Delete method', () => {
+    beforeEach(() => {
+      sinon.stub(Model, 'findByIdAndDelete').resolves(motorcycleMockWithId);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('tests if "delete" returns an object', async () => {
+      const id = '62e72ec0da4b869355d9976c';
+      const deletedMotorcycle = await motorcycleModel.delete(id);
+      expect(deletedMotorcycle).to.be.an('object');
+    });
+
+    it('tests if "delete" returns an object exactly equal to "motorcycleMockWithId"', async () => {
+      const id = '62e72ec0da4b869355d9976c';
+      const deletedMotorcycle = await motorcycleModel.delete(id);
+      expect(deletedMotorcycle).to.be.deep.equal(motorcycleMockWithId);
     });
   });
 });

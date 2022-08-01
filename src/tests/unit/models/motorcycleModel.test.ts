@@ -56,4 +56,26 @@ describe('4 - MotorcycleModel', () => {
       expect(allMotorcycles).to.be.deep.equal(allMotorcyclesMock);
     });
   });
+
+  describe('ReadOne method', () => {
+    beforeEach(() => {
+      sinon.stub(Model, 'findOne').resolves(motorcycleMockWithId);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('tests if "readOne" returns an object', async () => {
+      const id = '62e468e4143e7395140ee57d';
+      const foundMotorcycle = await motorcycleModel.readOne(id);
+      expect(foundMotorcycle).to.be.an('object');
+    });
+
+    it('tests if "readOne" returns an object exactly equal to "motorcycleMockWithId"', async () => {
+      const id = '62e468e4143e7395140ee57d';
+      const foundMotorcycle = await motorcycleModel.readOne(id);
+      expect(foundMotorcycle).to.be.deep.equal(motorcycleMockWithId);
+    });
+  });
 });

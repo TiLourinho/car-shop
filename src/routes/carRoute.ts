@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import carFactory from '../utils/factories';
+import { carFactory } from '../utils/factories';
 
 const carRoute = Router();
 

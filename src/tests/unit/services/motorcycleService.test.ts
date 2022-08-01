@@ -67,4 +67,48 @@ describe('5 - MotorcycleService', () => {
       expect(allMotorcycles).to.be.deep.equal(allMotorcyclesMock);
     });
   });
+
+  describe('ReadOne method', () => {
+    before(() => {
+      sinon.stub(motorcycleModel, 'readOne')
+        .onCall(0).resolves(motorcycleMockWithId)
+        .onCall(1).resolves()
+        .onCall(2).resolves(motorcycleMockWithId)
+        .onCall(3).resolves(motorcycleMockWithId);
+    });
+
+    after(() => {
+      sinon.restore();
+    });
+
+    it('tests if "readOne" returns an object', async () => {
+      const id = '62e721d8fb384e37fa8e7f2e';
+      const motorcycle = await motorcycleService.readOne(id);
+      expect(motorcycle).to.be.an('object');
+    });
+
+    it('tests if "readOne" returns an error when database has no registered motorcycles', async () => {
+      try {
+        const id = '62e721d8fb384e37fa8e7f2e';
+        await motorcycleService.readOne(id);
+      } catch (error: any) {
+        expect(error.message).to.be.deep.equal(ErrorTypes.ObjectNotFound);
+      }
+    });
+
+    it('tests if "readOne" returns an error when id is invalid', async () => {
+      try {
+        const id = '123SALVEEU';
+        await motorcycleService.readOne(id);
+      } catch (error: any) {
+        expect(error.message).to.be.deep.equal(ErrorTypes.InvalidMongoId);
+      }
+    });
+
+    it('tests if "readOne" returns an object exactly equal to "motorcycleMockWithId"', async () => {
+      const id = '62e721d8fb384e37fa8e7f2e';
+      const motorcycle = await motorcycleService.readOne(id);
+      expect(motorcycle).to.be.deep.equal(motorcycleMockWithId);
+    });
+  });
 });

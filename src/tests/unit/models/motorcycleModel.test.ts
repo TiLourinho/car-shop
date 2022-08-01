@@ -2,7 +2,8 @@ import * as sinon from 'sinon';
 import chai from 'chai';
 import { Model } from 'mongoose';
 import MotorcycleModel from '../../../models/MotorcycleModel';
-import { motorcycleMock, motorcycleMockWithId, allMotorcyclesMock } from '../../mocks/motorcycleMocks';
+import { motorcycleMock, motorcycleMockWithId, allMotorcyclesMock,
+  motorcycleMockToUpdate, motorcycleMockToUpdateWithId } from '../../mocks/motorcycleMocks';
 
 const { expect } = chai;
 
@@ -76,6 +77,28 @@ describe('4 - MotorcycleModel', () => {
       const id = '62e468e4143e7395140ee57d';
       const foundMotorcycle = await motorcycleModel.readOne(id);
       expect(foundMotorcycle).to.be.deep.equal(motorcycleMockWithId);
+    });
+  });
+
+  describe('Update method', () => {
+    beforeEach(() => {
+      sinon.stub(Model, 'findByIdAndUpdate').resolves(motorcycleMockToUpdateWithId);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('tests if "update" returns an object', async () => {
+      const id = '62e468e4143e7395140ee57d';
+      const updatedMotorcycle = await motorcycleModel.update(id, motorcycleMockToUpdate);
+      expect(updatedMotorcycle).to.be.an('object');
+    });
+
+    it('tests if "update" returns an object exactly equal to "motorcycleMockToUpdateWithId"', async () => {
+      const id = '62e468e4143e7395140ee57d';
+      const updatedMotorcycle = await motorcycleModel.update(id, motorcycleMockToUpdate);
+      expect(updatedMotorcycle).to.be.deep.equal(motorcycleMockToUpdateWithId);
     });
   });
 });
